@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require File.join(File.dirname(__FILE__), *%w[.. lib make_gem_now])
+
+MakeGemNow.make_all(*ARGV)
