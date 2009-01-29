@@ -1,10 +1,12 @@
 require "rubygems/indexer"
-
+require "logger"
 module MakeGemNow
   def make_all(source_paths, output_path = ".")
     gems_path = File.join(output_path, "gems")
     Dir.mkdir(gems_path) unless File.exists? gems_path
+    
     MakeGemNow::Scanner.new(source_paths).each do |gemspec|
+      update_repo(File.dirname(gemspec))
       begin
         MakeGemNow::Builder.new(gemspec, gems_path).build!
       rescue => e
@@ -14,6 +16,17 @@ module MakeGemNow
     end
     Gem::Indexer.new(output_path).generate_index
   end
+  
+  def update_repo(path)
+    p File.join(path, ".git")
+    if File.directory?(File.join(path, ".git"))
+      require 'git'
+      g = Git.open(path, :log => Logger.new(STDOUT))
+      g.fetch
+      g.merge "origin/master"
+    end
+  end
+  
   extend self
 end
 
