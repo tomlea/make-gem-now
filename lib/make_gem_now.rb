@@ -18,7 +18,6 @@ module MakeGemNow
   end
   
   def update_repo(path)
-    p File.join(path, ".git")
     if File.directory?(File.join(path, ".git"))
       require 'git'
       g = Git.open(path, :log => Logger.new(STDOUT))
