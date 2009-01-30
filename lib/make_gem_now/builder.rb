@@ -29,13 +29,13 @@ module MakeGemNow
     end
     
     def build!
+      old_pwd = Dir.pwd
       generate_spec
-
+      Dir.chdir(File.dirname(@path_to_gemspec))
       open File.join(@output_path, @spec.file_name), 'wb' do |gem_io|
         Gem::Package.open gem_io, 'w', nil do |pkg|
           pkg.metadata = @spec.to_yaml
-
-          @spec.files.map{|f| File.join(File.dirname(@path_to_gemspec), f)}.each do |file|
+          @spec.files.each do |file|
             next if File.directory? file
             next if file == @spec.file_name # Don't add gem onto itself
 
@@ -49,6 +49,8 @@ module MakeGemNow
           end
         end
       end
+    ensure
+      Dir.chdir(old_pwd)
     end
   end
 end
