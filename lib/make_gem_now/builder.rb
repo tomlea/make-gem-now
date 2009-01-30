@@ -1,6 +1,7 @@
 require "rubygems"
 require "yaml"
 require "rubygems/package"
+require 'timeout'
 
 module MakeGemNow
   class Builder
@@ -11,10 +12,20 @@ module MakeGemNow
     end
     
     def generate_spec
-      @spec_file = File.read(@path_to_gemspec)
-      @spec = nil
-      Thread.new { @spec = eval("$SAFE = 3\n#{@spec_file}") }.join
-      @spec
+      spec_file = File.read(@path_to_gemspec)
+
+      IO.popen("-"){|yaml_pipe|
+        if yaml_pipe
+          Timeout.timeout(1){
+            @spec = YAML.load(yaml_pipe)
+            raise "This isn't a freaking gemspec, what you trying to pull here buddy?" unless @spec.class == Gem::Specification
+          }
+        else
+          puts eval("$SAFE = 3\n (\n#{spec_file}\n).to_yaml")
+        end
+      }
+      
+      raise "Loading the YAML failed." unless $?.success?
     end
     
     def build!
