@@ -4,11 +4,16 @@ module MakeGemNow
   def make_all(source_paths, output_path = ".")
     gems_path = File.join(output_path, "gems")
     Dir.mkdir(gems_path) unless File.exists? gems_path
-    
+
     MakeGemNow::Scanner.new(source_paths).each do |gemspec|
       update_repo(File.dirname(gemspec))
       begin
-        MakeGemNow::Builder.new(gemspec, gems_path).build!
+        builder = MakeGemNow::Builder.new(gemspec, gems_path)
+        if builder.should_build?
+          builder.build!
+        else
+          puts "Skipping build of #{gemspec}. Already built this one."
+        end
       rescue => e
         puts "Could not build #{gemspec}:"
         puts "    "+e.message
