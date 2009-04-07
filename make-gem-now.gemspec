@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{make-gem-now}
-  s.version = "0.3"
+  s.version = "0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Lea"]
-  s.date = %q{2009-01-30}
+  s.date = %q{2009-04-07}
   s.default_executable = %q{make-gem-now}
   s.description = %q{A tool to build all gems in a given dir, and index them appropriately.}
   s.email = %q{commits@tomlea.co.uk}
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.rdoc_options = ["--line-numbers", "--inline-source", "--main", "README.markdown"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.0}
+  s.rubygems_version = %q{1.3.1}
   s.summary = %q{A tool to build all gems in a given dir, and index them appropriately.}
 
   if s.respond_to? :specification_version then

@@ -7,7 +7,7 @@ require 'date'
 
 spec = Gem::Specification.new do |s|
   s.name        = %q{make-gem-now}
-  s.version     = "0.3"
+  s.version     = "0.4"
   s.summary     = %q{A tool to build all gems in a given dir, and index them appropriately.}
   s.description = %q{A tool to build all gems in a given dir, and index them appropriately.}
 
