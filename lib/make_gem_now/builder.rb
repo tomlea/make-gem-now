@@ -7,7 +7,7 @@ module MakeGemNow
   class Builder
     def initialize(path_to_gemspec, output_path = ".")
       @path_to_gemspec = path_to_gemspec
-      @output_path = output_path
+      @output_path = File.expand_path(output_path)
       raise "Could not find gemspec!" unless File.exist? @path_to_gemspec
     end
     
