@@ -21,16 +21,16 @@ module MakeGemNow
     end
     Gem::Indexer.new(output_path).generate_index
   end
-  
+
   def update_repo(path)
     if File.directory?(File.join(path, ".git"))
       require 'git'
       g = Git.open(path, :log => Logger.new(STDOUT))
       g.fetch
-      g.merge "origin/master"
+      g.reset "--hard", "origin/master"
     end
   end
-  
+
   extend self
 end
 
