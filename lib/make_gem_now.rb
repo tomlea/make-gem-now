@@ -27,7 +27,7 @@ module MakeGemNow
       require 'git'
       g = Git.open(path, :log => Logger.new(STDOUT))
       g.fetch
-      g.reset "--hard", "origin/master"
+      g.reset "origin/master", :hard => true
     end
   end
 
