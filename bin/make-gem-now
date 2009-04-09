@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
 require File.join(File.dirname(__FILE__), *%w[.. lib make_gem_now])
 
+require File.expand_path("~/.make-gem-now-rc.rb") if File.exist? File.expand_path("~/.make-gem-now-rc.rb")
 MakeGemNow.make_all(*ARGV)

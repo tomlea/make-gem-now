@@ -37,28 +37,38 @@ module MakeGemNow
       ! File.exists?(File.join(@output_path, spec.file_name))
     end
 
+    def self.on_build(&block)
+      @on_build_callbacks ||= []
+      @on_build_callbacks << Proc.new(&block)
+    end
+
+    def self.do_on_build_callbacks(builder)
+      @on_build_callbacks.each do |callback|
+        callback.call(builder)
+      end
+    end
+
     def build!
-      old_pwd = Dir.pwd
-      Dir.chdir(File.dirname(@path_to_gemspec))
-      open File.join(@output_path, spec.file_name), 'wb' do |gem_io|
-        Gem::Package.open gem_io, 'w', nil do |pkg|
-          pkg.metadata = spec.to_yaml
-          spec.files.each do |file|
-            next if File.directory? file
-            next if file == spec.file_name # Don't add gem onto itself
+      Dir.chdir(File.dirname(@path_to_gemspec)) do
+        open File.join(@output_path, spec.file_name), 'wb' do |gem_io|
+          Gem::Package.open gem_io, 'w', nil do |pkg|
+            pkg.metadata = spec.to_yaml
+            spec.files.each do |file|
+              next if File.directory? file
+              next if file == spec.file_name # Don't add gem onto itself
 
-            stat = File.stat file
-            mode = stat.mode & 0777
-            size = stat.size
+              stat = File.stat file
+              mode = stat.mode & 0777
+              size = stat.size
 
-            pkg.add_file_simple file, mode, size do |tar_io|
-              tar_io.write open(file, "rb") { |f| f.read }
+              pkg.add_file_simple file, mode, size do |tar_io|
+                tar_io.write open(file, "rb") { |f| f.read }
+              end
             end
           end
         end
       end
-    ensure
-      Dir.chdir(old_pwd)
+      self.class.do_on_build_callbacks(self)
     end
   end
 end
